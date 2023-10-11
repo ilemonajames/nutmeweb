@@ -53,34 +53,19 @@
 
 		<!-- Head Libs -->
 		<script src="vendor/modernizr/modernizr.min.js"></script>
-		<!-- Add Firebase SDK -->
-		<script src="js/firebase.js"></script>
 
-		<script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-app.js"></script>
-		<script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-auth.js"></script>
-		<script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-firestore.js"></script>
+		<script type="module" src="js/index.js"></script>
 
-<script>
-  // Initialize Firebase with your configuration
- 
-  const firebaseConfig = {
-  apiKey: "AIzaSyCapOAXFPUYtqDwzkNNNBWBfFJx11oONj4",
-  authDomain: "nutmeup-57502.firebaseapp.com",
-  projectId: "nutmeup-57502",
-  storageBucket: "nutmeup-57502.appspot.com",
-  messagingSenderId: "399314612807",
-  appId: "1:399314612807:web:6acc796f5d766634dab762",
-  measurementId: "G-KS5SJQE9NR"
-};
-  firebase.initializeApp(firebaseConfig);
-
-  // Now you can use Firebase in your JavaScript code
-</script>
+		<link rel="stylesheet" href="css/style.css">
 
 
 	</head>
 
 	<body data-plugin-scroll-spy data-plugin-options="{'target': '#header'}">
+        <!-- Loader overlay -->
+        <div class="overlay" id="loader">
+            <div class="loader"></div>
+        </div>
 
 		<div class="body">
 
@@ -127,6 +112,7 @@
 													<li><a href="#reviews" class="nav-link active" data-hash data-hash-offset="0" data-hash-offset-lg="70">Reviews</a></li>
 													<li><a href="#faq" class="nav-link active" data-hash data-hash-offset="0" data-hash-offset-lg="70">Faq's</a></li>
 													<li><a href="#downloads" class="nav-link active" data-hash data-hash-offset="0" data-hash-offset-lg="70">Downloads</a></li>
+													<li><a href="login.html" class="nav-link active" data-hash data-hash-offset="0" data-hash-offset-lg="70" id="auth">Login</a></li>
 												</ul>
 											</nav>
 										</div>
@@ -828,33 +814,5 @@
 
 		<!-- Theme Initialization Files -->
 		<script src="js/theme.init.js"></script>
-<script>
-	  const database = firebase.database();
-
-// Write data to the database
-function writeData() {
-  const data = {
-	name: "John",
-	dateOfBirth: "1991-4-21",
-	phone:"081626363733",
-	profilePhoto:""
-  };
-  database.ref("users/1").set(data);
-}
-
-// Read data from the database
-function readData() {
-  const userRef = database.ref("users/1");
-  userRef.once("value")
-	.then((snapshot) => {
-	  const userData = snapshot.val();
-	  console.log(userData);
-	})
-	.catch((error) => {
-	  console.error(error);
-	});
-}
-
-</script>
 	</body>
 </html>
