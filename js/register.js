@@ -3,6 +3,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebas
 import {
   getAuth,
   createUserWithEmailAndPassword,
+  updateProfile,
 } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
 
 import {
@@ -32,28 +33,25 @@ auth
   .then(() => {
     const user = auth.currentUser;
     if (user) {
-      console.log("User is signed in!");
       location.href = "profile.html";
     } else {
-      console.log("User is signed out!");
     }
   })
   .catch((error) => {
-    console.error("Error waiting for auth state:", error);
+    alert("Error waiting for auth state: " + error);
   });
 
 const signupForm = document.getElementById("frmSignUp");
 signupForm.addEventListener("submit", (e) => {
   e.preventDefault();
+
   showLoader();
+
   const name = document.getElementById("name").value;
   const phone = document.getElementById("phone").value;
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
   const confirm = document.getElementById("confirm").value;
-  console.log(email + " " + password + " " + confirm);
-
-  console.log("signing up...");
 
   if (name == "" || phone == "" || email == "" || password == "") {
     alert("some fields are empty");
@@ -100,19 +98,29 @@ signupForm.addEventListener("submit", (e) => {
         const ref = doc(db, "USERS", user.uid);
         const docRef = await setDoc(ref, userModel);
 
-        console.log("Document written with ID: ", ref);
+        updateProfile(auth.currentUser, {
+          displayName: name,
+          //photoURL: "https://example.com/jane-q-user/profile.jpg",
+        })
+          .then(() => {
+            hideLoader();
+            location.href = "profile.html";
+          })
+          .catch((error) => {
+            hideLoader();
+            alert("error updating profile " + error.code);
+          });
       } catch (e) {
-        console.error("Error adding document: ", e);
+        hideLoader();
+        alert("Error adding document: " + e);
       }
-
-      hideLoader();
-      location.href = "profile.html";
     })
     .catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
-      console.log(error.code);
+
       hideLoader();
+
       if (errorCode === "auth/email-already-in-use") {
         alert("email already in use");
       } else if (errorCode === "auth/invalid-email") {
@@ -120,7 +128,7 @@ signupForm.addEventListener("submit", (e) => {
       } else if (errorCode === "auth/operation-not-allowed") {
         alert("operation not allowed");
       } else {
-        alert("weak password");
+        alert("weak password " + errorCode);
       }
     });
 });
