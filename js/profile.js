@@ -12,6 +12,7 @@ import {
   getDoc,
   getDocs,
   setDoc,
+  updateDoc,
   query,
   where,
 } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
@@ -53,6 +54,9 @@ onAuthStateChanged(auth, async function (user) {
         ? "VERIFIED"
         : "UNVERIFIED";
 
+        const previewImg = document.getElementById("previewImage");
+        previewImg.src = docSnap.data().bioData.profilePhoto;
+
       fetchVehicles(user.uid);
       hideLoader();
     } else {
@@ -60,6 +64,42 @@ onAuthStateChanged(auth, async function (user) {
   } else {
     hideLoader();
     location.href = "login.html";
+  }
+});
+
+const fileInput = document.getElementById("file");
+fileInput.addEventListener("change", (e) => {
+  const input = document.getElementById("file");
+  const previewImage = document.getElementById("previewImage");
+
+  const file = input.files[0];
+
+  if (file) {
+    showLoader();
+    const reader = new FileReader();
+
+    reader.onload = async function (e) {
+      const base64String = e.target.result;
+      previewImage.src = base64String;
+
+      const userRef = doc(db, "USERS", auth.currentUser.uid);
+
+      await updateDoc(userRef, {
+        bioData: {
+          profilePhoto: base64String,
+        },
+      })
+        .then(() => {
+          hideLoader();
+          alert("Profile photo updated successfully!");
+        })
+        .catch((error) => {
+          hideLoader();
+          alert("Error updating profile " + error.code);
+        });
+    };
+
+    reader.readAsDataURL(file);
   }
 });
 
